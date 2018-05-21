@@ -40,7 +40,11 @@ func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error)
 	if r == nil {
 		r = net.DefaultResolver
 	}
-	_, addrs, err := r.LookupSRV(ctx, fa.Service, fa.Proto, fa.Name)
+	host, _, err := net.SplitHostPort(fa.Name)
+	if err != nil {
+		return nil, err
+	}
+	_, addrs, err := r.LookupSRV(ctx, fa.Service, fa.Proto, host)
 	if err != nil {
 		return nil, err
 	}
