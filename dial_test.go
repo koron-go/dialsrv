@@ -11,14 +11,15 @@ func TestParseAddr(t *testing.T) {
 		fa   FlavoredAddr
 	}{
 		{"tcp", "srv+myservice+example.com",
-			FlavoredAddr{"myservice", "tcp", "example.com"}},
+			FlavoredAddr{"tcp", "myservice", "tcp", "example.com"}},
 		{"udp", "srv+myservice+example.com",
-			FlavoredAddr{"myservice", "udp", "example.com"}},
+			FlavoredAddr{"udp", "myservice", "udp", "example.com"}},
 		{"tcp", "srv+myapi+example.com",
-			FlavoredAddr{"myapi", "tcp", "example.com"}},
+			FlavoredAddr{"tcp", "myapi", "tcp", "example.com"}},
 		{"tcp", "srv+myservice+foo.example.org",
-			FlavoredAddr{"myservice", "tcp", "foo.example.org"}},
-		{"tcp", "srv+example.com", FlavoredAddr{"", "", "example.com"}},
+			FlavoredAddr{"tcp", "myservice", "tcp", "foo.example.org"}},
+		{"tcp", "srv+example.com",
+			FlavoredAddr{"tcp", "", "", "example.com"}},
 	} {
 		act := parseAddr(d.n, d.a)
 		if !reflect.DeepEqual(act, &d.fa) {

@@ -51,11 +51,12 @@ func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error)
 	if len(addrs) == 0 {
 		return nil, fmt.Errorf("no SRV records for %s", fa.String())
 	}
-	return d.nd.DialContext(ctx, fa.Proto, address(addrs[0]))
+	return d.nd.DialContext(ctx, fa.Network, address(addrs[0]))
 }
 
 // FlavoredAddr represents SRV flavored address.
 type FlavoredAddr struct {
+	Network string
 	Service string
 	Proto   string
 	Name    string
@@ -69,9 +70,10 @@ func parseAddr(network, address string) *FlavoredAddr {
 	address = address[len(prefix):]
 	n := strings.Index(address, "+")
 	if n < 0 {
-		return &FlavoredAddr{Name: address}
+		return &FlavoredAddr{Network: network, Name: address}
 	}
 	return &FlavoredAddr{
+		Network: network,
 		Service: address[:n],
 		Proto:   network,
 		Name:    address[n+1:],
