@@ -40,7 +40,7 @@ func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error)
 	if r == nil {
 		r = net.DefaultResolver
 	}
-	host, _, err := net.SplitHostPort(fa.Name)
+	host, err := splitHost(fa.Name)
 	if err != nil {
 		return nil, err
 	}
@@ -52,6 +52,14 @@ func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error)
 		return nil, fmt.Errorf("no SRV records for %s", fa.String())
 	}
 	return d.nd.DialContext(ctx, fa.Network, address(addrs[0]))
+}
+
+func splitHost(s string) (string, error) {
+	if strings.IndexByte(s, ':') < 0 {
+		return s, nil
+	}
+	h, _, err := net.SplitHostPort(s)
+	return h, err
 }
 
 // FlavoredAddr represents SRV flavored address.
