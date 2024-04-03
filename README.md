@@ -1,7 +1,7 @@
 # koron-go/dialsrv
 
-[![GoDoc](https://godoc.org/github.com/koron-go/dialsrv?status.svg)](https://godoc.org/github.com/koron-go/dialsrv)
-[![CircleCI](https://img.shields.io/circleci/project/github/koron-go/dialsrv/master.svg)](https://circleci.com/gh/koron-go/dialsrv/tree/master)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/koron-go/dialsrv)](https://pkg.go.dev/github.com/koron-go/dialsrv)
+[![Actions/Go](https://github.com/koron-go/dialsrv/workflows/Go/badge.svg)](https://github.com/koron-go/dialsrv/actions?query=workflow%3AGo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/koron-go/dialsrv)](https://goreportcard.com/report/github.com/koron-go/dialsrv)
 
 Dialer with SRV lookup.
