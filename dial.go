@@ -1,3 +1,7 @@
+/*
+Package dialsrv provides a net.Dialer implementation that can reference SRV
+records to DNS servers.
+*/
 package dialsrv
 
 import (
