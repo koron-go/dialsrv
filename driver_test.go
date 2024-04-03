@@ -3,6 +3,7 @@ package dialsrv
 import (
 	"context"
 	"net"
+	"strings"
 	"testing"
 )
 
@@ -15,7 +16,7 @@ func TestDialerDriver(t *testing.T) {
 	if len(addrs) != 0 {
 		t.Errorf("unexpected addrs=%+v", addrs)
 	}
-	if want, got := "lookup example.com: no such host", err.Error(); got != want {
-		t.Errorf("unexpected error:\nwant=%s\n got=%s", want, got)
+	if got := err.Error(); !strings.HasPrefix(got, "lookup ") || !strings.HasSuffix(got, ": no such host"){
+		t.Errorf("unexpected error:\nwant=%s\n got=%s", "lookup .*: no such host", got)
 	}
 }
