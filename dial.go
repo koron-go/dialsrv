@@ -14,7 +14,7 @@ import (
 
 // Dialer wraps net.Dialer with SRV lookup.
 type Dialer struct {
-	nd *net.Dialer
+	drv driver
 }
 
 // New creates a new Dialer with base *net.Dialer.
@@ -22,7 +22,9 @@ func New(d *net.Dialer) *Dialer {
 	if d == nil {
 		d = &net.Dialer{}
 	}
-	return &Dialer{nd: d}
+	return &Dialer{
+		drv: &netDialerDriver{d},
+	}
 }
 
 // Dial connects to the address on the named network.
@@ -36,27 +38,23 @@ func (d *Dialer) DialContext(ctx context.Context, network, address string) (net.
 	if fa := parseAddr(network, address); fa != nil {
 		return d.dialSRV(ctx, fa)
 	}
-	return d.nd.DialContext(ctx, network, address)
+	return d.drv.DialContext(ctx, network, address)
 }
 
 func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error) {
-	r := d.nd.Resolver
-	if r == nil {
-		r = net.DefaultResolver
-	}
 	host, err := splitHost(fa.Name)
 	if err != nil {
 		return nil, err
 	}
-	_, addrs, err := r.LookupSRV(ctx, fa.Service, fa.Proto, host)
+	_, addrs, err := d.drv.LookupSRV(ctx, fa.Service, fa.Proto, host)
 	if err != nil {
 		return nil, err
 	}
 	if len(addrs) == 0 {
 		return nil, fmt.Errorf("no SRV records for %s", fa.String())
 	}
-	// TODO: consider the ase of len(addrs) >= 2. Use with rotation or random?
-	return d.nd.DialContext(ctx, fa.Network, address(addrs[0]))
+	// TODO: consider the case of len(addrs) >= 2. Use with rotation or random?
+	return d.drv.DialContext(ctx, fa.Network, address(addrs[0]))
 }
 
 func splitHost(s string) (string, error) {
