@@ -55,6 +55,7 @@ func (d Dialer) dialSRV(ctx context.Context, fa *FlavoredAddr) (net.Conn, error)
 	if len(addrs) == 0 {
 		return nil, fmt.Errorf("no SRV records for %s", fa.String())
 	}
+	// TODO: consider the ase of len(addrs) >= 2. Use with rotation or random?
 	return d.nd.DialContext(ctx, fa.Network, address(addrs[0]))
 }
 
